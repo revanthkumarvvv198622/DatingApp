@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,11 +38,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 var app = builder.Build();
+app.UseMiddleware<ExceptionMiddleware>();
 
-app.MapControllers();
 app.UseCors(x=> x.WithOrigins("http://localhost:4200","https://localhost:4200")
                  .AllowAnyMethod().AllowAnyHeader());
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapControllers();
 app.Run();
